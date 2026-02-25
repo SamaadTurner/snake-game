@@ -1,0 +1,28 @@
+{
+  "name": "claude-tutorial",
+  "version": "1.0.0",
+  "description": "Snake Game with Comprehensive Test Suite",
+  "main": "index.html",
+  "type": "module",
+  "scripts": {
+    "test": "vitest",
+    "test:unit": "vitest run tests/unit",
+    "test:integration": "vitest run tests/integration",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:coverage": "vitest run --coverage",
+    "test:all": "npm run test:unit && npm run test:integration && npm run test:e2e",
+    "test:watch": "vitest watch",
+    "serve": "node server.js"
+  },
+  "keywords": ["snake", "game", "testing", "vitest", "playwright"],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@playwright/test": "^1.58.2",
+    "@vitest/coverage-v8": "^4.0.18",
+    "happy-dom": "^20.7.0",
+    "jsdom": "^28.1.0",
+    "vitest": "^4.0.18"
+  }
+}

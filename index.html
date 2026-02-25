@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snake Game</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="game-container">
+        <h1>SNAKE GAME</h1>
+
+        <div class="score-board">
+            <div class="score-item">
+                <span class="score-label">Score:</span>
+                <span id="score">0</span>
+            </div>
+            <div class="score-item">
+                <span class="score-label">Level:</span>
+                <span id="difficulty">1</span>
+            </div>
+        </div>
+
+        <div style="position: relative;">
+            <canvas id="gameCanvas" width="800" height="600" role="img" aria-label="Snake game playing field"></canvas>
+            <div id="startMessage" class="start-message" style="display: none;">
+                Press SPACE to Start
+            </div>
+            <div id="pauseOverlay" class="pause-overlay">
+                PAUSED<br>
+                <span style="font-size: 0.5em;">Press P or ESC to Resume</span>
+            </div>
+        </div>
+
+        <div class="controls-info">
+            Use Arrow Keys or WASD to move | SPACE to start/restart | P or ESC to pause
+        </div>
+    </div>
+
+    <div id="gameOverOverlay" class="game-over-overlay">
+        <div class="game-over-content">
+            <h2>GAME OVER</h2>
+            <p class="final-score">Final Score: <span id="finalScore">0</span></p>
+            <p class="restart-hint">Press SPACE to Restart</p>
+        </div>
+    </div>
+
+    <script src="game.js"></script>
+</body>
+</html>
