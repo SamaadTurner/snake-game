@@ -51,6 +51,16 @@ if (!ctx && typeof window !== 'undefined' && !window.testAPI) {
     }
 }
 
+// Cache DOM element references
+const DOM = {
+    gameOverOverlay: document.getElementById('gameOverOverlay'),
+    pauseOverlay: document.getElementById('pauseOverlay'),
+    finalScore: document.getElementById('finalScore'),
+    startMessage: document.getElementById('startMessage'),
+    score: document.getElementById('score'),
+    difficulty: document.getElementById('difficulty')
+};
+
 // Game State
 const gameState = {
     snake: [],
@@ -80,9 +90,9 @@ const gameState = {
         this.lastUpdateTime = 0;
         this.spawnFood();
         this.updateUI();
-        document.getElementById('gameOverOverlay').classList.remove('active');
-        document.getElementById('startMessage').style.display = 'block';
-        document.getElementById('pauseOverlay').classList.remove('active');
+        if (DOM.gameOverOverlay) DOM.gameOverOverlay.classList.remove('active');
+        if (DOM.startMessage) DOM.startMessage.style.display = 'block';
+        if (DOM.pauseOverlay) DOM.pauseOverlay.classList.remove('active');
     },
 
     spawnFood() {
@@ -108,19 +118,20 @@ const gameState = {
     handleVictory() {
         this.gameOver = true;
         this.gameRunning = false;
-        document.getElementById('finalScore').textContent = this.score + ' - PERFECT GAME!';
-        document.getElementById('gameOverOverlay').classList.add('active');
+        if (DOM.finalScore) DOM.finalScore.textContent = this.score + ' - PERFECT GAME!';
+        if (DOM.gameOverOverlay) DOM.gameOverOverlay.classList.add('active');
     },
 
     collectFood() {
         this.score += SCORE_PER_FOOD;
 
-        // Update difficulty
-        for (let level = 10; level >= 1; level--) {
+        // Update difficulty - check from current level upward
+        for (let level = this.difficulty + 1; level <= 10; level++) {
             if (this.score >= DIFFICULTY_THRESHOLDS[level]) {
                 this.difficulty = level;
                 this.speed = SPEED_BY_DIFFICULTY[level];
-                break;
+            } else {
+                break; // No need to check higher levels
             }
         }
 
@@ -129,20 +140,21 @@ const gameState = {
     },
 
     updateUI() {
-        document.getElementById('score').textContent = this.score;
-        document.getElementById('difficulty').textContent = this.difficulty;
+        if (DOM.score) DOM.score.textContent = this.score;
+        if (DOM.difficulty) DOM.difficulty.textContent = this.difficulty;
     },
 
     togglePause() {
         if (this.gameOver || !this.gameRunning) return;
 
         this.gamePaused = !this.gamePaused;
-        const pauseOverlay = document.getElementById('pauseOverlay');
 
-        if (this.gamePaused) {
-            pauseOverlay.classList.add('active');
-        } else {
-            pauseOverlay.classList.remove('active');
+        if (DOM.pauseOverlay) {
+            if (this.gamePaused) {
+                DOM.pauseOverlay.classList.add('active');
+            } else {
+                DOM.pauseOverlay.classList.remove('active');
+            }
         }
     }
 };
@@ -200,7 +212,7 @@ const inputHandler = {
                 gameState.init();
             } else if (!gameState.gameRunning) {
                 gameState.gameRunning = true;
-                document.getElementById('startMessage').style.display = 'none';
+                if (DOM.startMessage) DOM.startMessage.style.display = 'none';
             }
         }
 
@@ -309,8 +321,8 @@ function gameLoop(timestamp) {
         if (checkWallCollision(newHead) || checkSelfCollision(newHead)) {
             gameState.gameOver = true;
             gameState.gameRunning = false;
-            document.getElementById('finalScore').textContent = gameState.score;
-            document.getElementById('gameOverOverlay').classList.add('active');
+            if (DOM.finalScore) DOM.finalScore.textContent = gameState.score;
+            if (DOM.gameOverOverlay) DOM.gameOverOverlay.classList.add('active');
         } else {
             // Add new head
             gameState.snake.unshift(newHead);
