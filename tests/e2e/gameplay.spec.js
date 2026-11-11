@@ -63,11 +63,13 @@ test.describe('Snake Game - Full Gameplay', () => {
       y: window.testAPI.gameState.direction.y
     }));
 
-    // Press up arrow
+    // Press up arrow. The new direction is applied on the next game tick,
+    // so wait for it instead of sleeping for a fixed time.
     await page.keyboard.press('ArrowUp');
-    await page.waitForTimeout(150);
+    await expect.poll(() =>
+      page.evaluate(() => window.testAPI.gameState.direction.y)
+    ).toBe(-1);
 
-    // Direction should have changed
     const newDir = await page.evaluate(() => ({
       x: window.testAPI.gameState.direction.x,
       y: window.testAPI.gameState.direction.y
@@ -144,22 +146,17 @@ test.describe('Snake Game - Full Gameplay', () => {
     await page.keyboard.press('Space');
     await page.waitForTimeout(100);
 
+    // A key press only takes effect on the next game tick, so wait for the
+    // direction to change instead of sleeping for a fixed time.
+    const getDirection = () =>
+      page.evaluate(() => window.testAPI.gameState.direction);
+
     // Press W (up)
     await page.keyboard.press('w');
-    await page.waitForTimeout(150);
-
-    const directionW = await page.evaluate(() =>
-      window.testAPI.gameState.direction
-    );
-    expect(directionW.y).toBe(-1); // Moving up
+    await expect.poll(async () => (await getDirection()).y).toBe(-1);
 
     // Press D (right)
     await page.keyboard.press('d');
-    await page.waitForTimeout(150);
-
-    const directionD = await page.evaluate(() =>
-      window.testAPI.gameState.direction
-    );
-    expect(directionD.x).toBe(1); // Moving right
+    await expect.poll(async () => (await getDirection()).x).toBe(1);
   });
 });

@@ -224,32 +224,21 @@ test.describe('Snake Game - Keyboard Input', () => {
       window.testAPI.gameState.nextDirection = { x: 1, y: 0 };
     });
 
+    // Direction changes are applied on the next game tick, so poll for them
+    const getDirection = () =>
+      page.evaluate(() => ({ ...window.testAPI.gameState.direction }));
+
     // Go up with W
     await page.keyboard.press('w');
-    await page.waitForTimeout(150);
-
-    let direction = await page.evaluate(() =>
-      ({ ...window.testAPI.gameState.direction })
-    );
-    expect(direction.y).toBe(-1);
+    await expect.poll(async () => (await getDirection()).y).toBe(-1);
 
     // Go left with arrow
     await page.keyboard.press('ArrowLeft');
-    await page.waitForTimeout(150);
-
-    direction = await page.evaluate(() =>
-      ({ ...window.testAPI.gameState.direction })
-    );
-    expect(direction.x).toBe(-1);
+    await expect.poll(async () => (await getDirection()).x).toBe(-1);
 
     // Go down with S
     await page.keyboard.press('s');
-    await page.waitForTimeout(150);
-
-    direction = await page.evaluate(() =>
-      ({ ...window.testAPI.gameState.direction })
-    );
-    expect(direction.y).toBe(1);
+    await expect.poll(async () => (await getDirection()).y).toBe(1);
 
     const isRunning = await page.evaluate(() =>
       window.testAPI.gameState.gameRunning
