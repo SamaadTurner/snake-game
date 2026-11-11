@@ -1,108 +1,77 @@
-# 🐍 Snake Game
+# Snake Game
 
-<div align="center">
+[![Test and Deploy](https://github.com/SamaadTurner/snake-game/actions/workflows/deploy.yml/badge.svg)](https://github.com/SamaadTurner/snake-game/actions/workflows/deploy.yml)
 
-## [🎮 **PLAY NOW** 🎮](https://samaadturner.github.io/snake-game/)
+A Snake game written in plain JavaScript on an HTML canvas. No frameworks.
 
-Classic Snake game with modern web technologies
+**Play it here: https://samaadturner.github.io/snake-game/**
 
-![Tests](https://img.shields.io/badge/tests-239%20passing-brightgreen)
-![Coverage](https://img.shields.io/badge/coverage-unit%20%2B%20integration%20%2B%20e2e-blue)
+![Screenshot of the game](docs/screenshot.png)
 
-</div>
+I built this mainly to practice testing. The game itself is small, so most of the
+work went into the test suite and getting it to run in CI.
 
----
+## How to play
 
-## 🎯 Features
+- `SPACE` starts or restarts the game
+- Arrow keys or `WASD` move the snake
+- `P` or `ESC` pauses
+- Eating food adds 10 points. The snake speeds up as the score goes up (10 levels).
+- Hitting a wall or yourself ends the game
 
-- **Pause Controls** - Press `P` or `ESC` to pause/resume
-- **Progressive Difficulty** - 10 levels that increase with your score
-- **Keyboard Controls** - Use Arrow Keys or WASD
-- **Responsive Design** - Clean, modern UI with smooth animations
-- **Victory Condition** - Fill the entire grid to win!
+## Run it locally
 
-## 🎮 How to Play
-
-1. **[Click here to play](https://samaadturner.github.io/snake-game/)** or visit: `https://samaadturner.github.io/snake-game/`
-2. Press `SPACE` to start
-3. Use `Arrow Keys` or `WASD` to move
-4. Eat food to grow and increase your score
-5. Avoid hitting walls or yourself
-
-## 🧪 Testing
-
-Comprehensive test suite ensuring quality:
-
-- **95 Unit Tests** - Core game logic
-- **51 Integration Tests** - Component interactions
-- **93 E2E Tests** - Full gameplay across Chrome, Firefox, Safari
+You need Node 20 or newer.
 
 ```bash
-npm run test:unit          # Unit tests
-npm run test:integration   # Integration tests
-npm run test:e2e          # End-to-end tests
-npm run test:all          # Run all tests
-```
-
-## 🚀 Run Locally
-
-```bash
-# Clone the repository
 git clone https://github.com/SamaadTurner/snake-game.git
 cd snake-game
-
-# Install dependencies
 npm install
-
-# Start local server
 npm run serve
-
-# Open http://localhost:8080 in your browser
 ```
 
-## 🛠️ Tech Stack
+Then open http://localhost:8080.
 
-- **Vanilla JavaScript** - No frameworks, pure JS
-- **HTML5 Canvas** - Smooth graphics rendering
-- **CSS3** - Modern styling with animations
-- **Vitest** - Fast unit testing
-- **Playwright** - Cross-browser E2E testing
-- **GitHub Actions** - Automated CI/CD
+## Tests
 
-## 📊 Project Structure
+| Type | Count | Tool | What it covers |
+|---|---|---|---|
+| Unit | 95 | Vitest + jsdom | Collisions, input handling, food spawning, difficulty, game state |
+| Integration | 51 | Vitest + jsdom | Movement, eating food, drawing to the canvas |
+| End-to-end | 31 | Playwright | Real gameplay in Chromium, Firefox and WebKit (93 runs total) |
 
-```
-snake-game/
-├── index.html          # Game markup
-├── styles.css          # Styling
-├── game.js            # Game logic
-├── tests/
-│   ├── unit/          # Unit tests
-│   ├── integration/   # Integration tests
-│   └── e2e/          # End-to-end tests
-└── .github/workflows/ # CI/CD pipeline
+```bash
+npm test                  # unit + integration
+npm run test:unit
+npm run test:integration
+
+npx playwright install    # one time, downloads the browsers
+npm run test:e2e
 ```
 
-## 🎯 Best Practices Implemented
+Every push to `main` runs all three sets in GitHub Actions. The site only deploys
+if they pass.
 
-✅ Separated HTML/CSS/JS for maintainability
-✅ Canvas context error handling
-✅ Accessibility with ARIA labels
-✅ Prevents infinite loops in food spawning
-✅ Fixed delta time for smooth initial movement
-✅ 100% E2E test pass rate
-✅ Automated deployment pipeline
+### Things I ran into
 
-## 📝 License
+- The end-to-end tests used to wait a fixed 150 ms after a key press and then check
+  the snake's direction. That failed once in a while because a key press only takes
+  effect on the next game tick. They now wait until the direction actually changes.
+- Food spawns at a random spot, so a test that "plays" until it eats food can lose.
+  The test now puts the food right in front of the snake first.
+- The game runs from a plain `<script>` tag, so the unit tests load `index.html`
+  into jsdom and read the game through a small `window.testAPI` object.
 
-MIT License - feel free to use this code for learning or your own projects!
+## Files
 
----
+```
+index.html     page markup
+styles.css     styling
+game.js        all game logic
+server.js      small static file server for local use and e2e tests
+tests/unit, tests/integration, tests/e2e
+```
 
-<div align="center">
+## License
 
-**[🎮 Play the Game](https://samaadturner.github.io/snake-game/)** | **[Report Bug](https://github.com/SamaadTurner/snake-game/issues)** | **[Request Feature](https://github.com/SamaadTurner/snake-game/issues)**
-
-Made with ❤️ and tested with 💯
-
-</div>
+MIT
