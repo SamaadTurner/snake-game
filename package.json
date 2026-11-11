@@ -1,7 +1,7 @@
 {
-  "name": "claude-tutorial",
+  "name": "snake-game",
   "version": "1.0.0",
-  "description": "Snake Game with Comprehensive Test Suite",
+  "description": "Snake game in plain JavaScript with unit, integration and end-to-end tests",
   "main": "index.html",
   "type": "module",
   "scripts": {
@@ -16,7 +16,7 @@
     "serve": "node server.js"
   },
   "keywords": ["snake", "game", "testing", "vitest", "playwright"],
-  "author": "",
+  "author": "Samaad Turner",
   "license": "ISC",
   "devDependencies": {
     "@playwright/test": "^1.58.2",
