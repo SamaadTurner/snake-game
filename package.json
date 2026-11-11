@@ -15,13 +15,18 @@
     "test:watch": "vitest watch",
     "serve": "node server.js"
   },
-  "keywords": ["snake", "game", "testing", "vitest", "playwright"],
+  "keywords": [
+    "snake",
+    "game",
+    "testing",
+    "vitest",
+    "playwright"
+  ],
   "author": "Samaad Turner",
   "license": "ISC",
   "devDependencies": {
     "@playwright/test": "^1.58.2",
     "@vitest/coverage-v8": "^4.0.18",
-    "happy-dom": "^20.7.0",
     "jsdom": "^28.1.0",
     "vitest": "^4.0.18"
   }
