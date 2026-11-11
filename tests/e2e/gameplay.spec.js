@@ -78,56 +78,22 @@ test.describe('Snake Game - Full Gameplay', () => {
   });
 
   test('should increase score when eating food', async ({ page }) => {
+    // Food normally spawns in a random spot, which made this test fail some runs.
+    // Put the food a few cells in front of the snake so the result is always the same.
+    await page.evaluate(() => {
+      const state = window.testAPI.gameState;
+      const head = state.snake[0];
+      state.food = {
+        x: head.x + state.direction.x * 3,
+        y: head.y + state.direction.y * 3
+      };
+    });
+
     await page.keyboard.press('Space');
 
+    // The snake keeps moving straight, so it should reach the food on its own
     const score = page.locator('#score');
-
-    // Actively guide snake to food
-    let attempts = 0;
-    const maxAttempts = 100;
-
-    while (attempts < maxAttempts) {
-      const currentScore = await page.evaluate(() =>
-        parseInt(document.getElementById('score').textContent)
-      );
-
-      if (currentScore > 0) {
-        break;
-      }
-
-      // Get snake and food positions
-      const gameData = await page.evaluate(() => ({
-        snake: window.testAPI.gameState.snake[0],
-        food: window.testAPI.gameState.food,
-        gameOver: window.testAPI.gameState.gameOver
-      }));
-
-      if (gameData.gameOver) {
-        throw new Error('Game ended before reaching food');
-      }
-
-      // Calculate direction to food
-      const dx = gameData.food.x - gameData.snake.x;
-      const dy = gameData.food.y - gameData.snake.y;
-
-      // Move towards food (prefer horizontal movement first)
-      if (Math.abs(dx) > Math.abs(dy)) {
-        if (dx > 0) {
-          await page.keyboard.press('ArrowRight');
-        } else {
-          await page.keyboard.press('ArrowLeft');
-        }
-      } else {
-        if (dy > 0) {
-          await page.keyboard.press('ArrowDown');
-        } else {
-          await page.keyboard.press('ArrowUp');
-        }
-      }
-
-      await page.waitForTimeout(150);
-      attempts++;
-    }
+    await expect(score).not.toHaveText('0', { timeout: 5000 });
 
     const newScore = await score.textContent();
     expect(parseInt(newScore)).toBeGreaterThan(0);
