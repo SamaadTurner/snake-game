@@ -33,9 +33,21 @@ jobs:
       - name: Run integration tests
         run: npm run test:integration
 
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      - name: Run end-to-end tests
+        run: npm run test:e2e
+
+      # Only the game files go to the live site, not tests or node_modules
+      - name: Copy game files to site folder
+        run: |
+          mkdir site
+          cp index.html styles.css game.js site/
+
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./
+          publish_dir: ./site
           publish_branch: gh-pages
