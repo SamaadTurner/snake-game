@@ -13,9 +13,7 @@ permissions:
 
 jobs:
   test-and-deploy:
-    # Pinned: ubuntu-latest moved to Ubuntu 26.04, which Playwright 1.58 cannot
-    # install browsers on yet. Move back once Playwright supports it.
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -41,13 +39,16 @@ jobs:
       - name: Run end-to-end tests
         run: npm run test:e2e
 
-      # Only the game files go to the live site, not tests or node_modules
+      # Only the game files go to the live site, not tests or node_modules.
+      # A manual run from another branch tests without deploying.
       - name: Copy game files to site folder
+        if: github.ref == 'refs/heads/main'
         run: |
           mkdir site
           cp index.html styles.css game.js site/
 
       - name: Deploy to GitHub Pages
+        if: github.ref == 'refs/heads/main'
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
